@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "templates": {
+    "requirements/docs-starter": {
+      "description": "Standard docs/ structure for product requirements: overview, business model, requirements, one file per feature, working notes.",
+      "used_by": [
+        "product-requirements"
+      ],
+      "files": [
+        "README.md",
+        "00-overview/01-introduction.md",
+        "00-overview/02-glossary.md",
+        "00-overview/03-conventions.md",
+        "01-business/01-actors-and-permissions.md",
+        "01-business/02-domain-model.md",
+        "01-business/03-business-rules.md",
+        "01-business/04-workflows.md",
+        "02-requirements/01-feature-list.md",
+        "02-requirements/02-non-functional-requirements.md",
+        "03-functional-specs/_template.md",
+        "09-working/decisions-log.md",
+        "09-working/open-questions.md"
+      ]
+    },
+    "design/ui-ux": {
+      "description": "UI/UX design docs for docs/04-ui/: design brief, information architecture, screen map, user flows, design system, UX copy, accessibility, one file per screen.",
+      "used_by": [],
+      "files": [
+        "README.md",
+        "01-design-brief.md",
+        "02-information-architecture.md",
+        "03-screen-map.md",
+        "04-user-flows.md",
+        "05-design-system.md",
+        "06-ux-copy.md",
+        "07-accessibility.md",
+        "08-screens/_template.md"
+      ]
+    }
+  }
+}
