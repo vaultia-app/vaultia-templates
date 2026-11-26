@@ -22,6 +22,8 @@ SUPPORTED_SCHEMAS = {1}
 ID_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*(/[a-z0-9]+(-[a-z0-9]+)*)+$")
 LINK = re.compile(r"\]\(([^)\s]+)\)")
 FENCE = re.compile(r"```.*?```", re.S)
+IGNORED_DIRS = {"node_modules", ".turbo", "dist", ".next"}
+IGNORED_FILES = {".DS_Store", "bun.lock", "bun.lockb", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "tsconfig.tsbuildinfo"}
 
 
 def validate(root: Path = ROOT) -> list[str]:
@@ -62,10 +64,16 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{where}: invalid file path {rel!r}")
             elif not (folder / rel).is_file():
                 errors.append(f"{where}: listed file {rel} does not exist")
-        actual = {str(p.relative_to(folder)) for p in folder.rglob("*") if p.is_file() and p.name != ".DS_Store"}
+        actual = {
+            str(p.relative_to(folder))
+            for p in folder.rglob("*")
+            if p.is_file() and p.name not in IGNORED_FILES and not IGNORED_DIRS.intersection(p.relative_to(folder).parts)
+        }
         for rel in sorted(actual - set(files)):
             errors.append(f"{where}: {rel} exists but is not listed in files")
         for doc in folder.rglob("*.md"):
+            if IGNORED_DIRS.intersection(doc.relative_to(folder).parts):
+                continue
             text = FENCE.sub("", doc.read_text(encoding="utf-8"))
             for target in LINK.findall(text):
                 if "://" in target or target.startswith(("#", "mailto:")) or "<" in target:

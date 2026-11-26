@@ -15,3 +15,18 @@ jobs:
           python-version: "3.13"
       - name: Validate manifest and templates
         run: python scripts/validate.py
+
+  base-ui-react-kit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/frontend/base-ui-react-kit
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Typecheck
+        run: bun run typecheck
+      - name: Theme CSS matches tokens
+        run: bun run theme:check

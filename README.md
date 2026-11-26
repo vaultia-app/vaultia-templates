@@ -9,7 +9,7 @@ Skills read these templates **live from `main`** every time they need them, so a
 | ID | Used by | What it is |
 |---|---|---|
 | `requirements/docs-starter` | `product-requirements` | Standard `docs/` structure for product requirements: overview, business model, requirements, one file per feature, working notes |
-| `design/ui-ux` | Not yet used by a skill | UI/UX docs for `docs/04-ui/`: design brief, information architecture, screen map, user flows, design system, UX copy, accessibility, one file per screen (`S<nn>`), referencing requirement IDs |
+| `frontend/base-ui-react-kit` | Not yet used by a skill | React UI kit to copy into `packages/ui`: ~60 Base UI + Tailwind v4 + `cva` components (atoms, molecules, organisms), DTCG tokens with generated themes, English and Vietnamese locale. Rules for agents in its `AGENTS.md` |
 
 Templates live in `src/`; a template's ID is its path inside `src/`. Every template is listed in [`manifest.json`](manifest.json).
 
@@ -21,6 +21,8 @@ Templates live in `src/`; a template's ID is its path inside `src/`. Every templ
 4. If any step fails, use the copy bundled in the skill instead. Never mix files from both sources.
 
 GitHub caches raw files for a few minutes, so a change can take up to about 5 minutes to reach users.
+
+Large code templates such as `frontend/base-ui-react-kit` are copied as a whole folder (`npx degit vaultia-app/vaultia-templates/src/<id> <target>`) rather than fetched file by file; see the template's own `README.md`.
 
 ## Compatibility rules
 
