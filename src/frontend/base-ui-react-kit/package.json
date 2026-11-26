@@ -1,0 +1,47 @@
+{
+  "name": "@workspace/ui",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*",
+    "./atoms/*": "./src/components/atoms/*",
+    "./molecules/*": "./src/components/molecules/*",
+    "./organisms/*": "./src/components/organisms/*",
+    "./styles/*": "./src/styles/*",
+    "./lib/*": "./src/lib/*",
+    "./hooks/*": "./src/hooks/*",
+    "./tokens": "./src/tokens/index.ts",
+    "./tokens/*": "./src/tokens/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "theme:build": "node scripts/build-theme.mjs",
+    "theme:check": "node scripts/build-theme.mjs --check"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.9.0",
+    "@base-ui/utils": "0.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.62.0",
+    "react-day-picker": "^10.0.2",
+    "recharts": "3.10.1",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "vaul": "^1.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript": "^6.0.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
