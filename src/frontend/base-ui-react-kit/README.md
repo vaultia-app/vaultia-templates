@@ -94,9 +94,9 @@ Everything is also exported from `@workspace/ui`.
 
 ## Brand themes
 
-Colors come from `src/tokens/tokens.json`. The default theme uses an indigo `brand` scale and a zinc `neutral` scale.
+Colors come from `src/tokens/tokens.json`. The default theme follows the [shadcn/ui](https://ui.shadcn.com/colors) **Neutral** palette: a near-black `primary` (light gray in dark mode), neutral grays, radius `0.625rem`, and the shadcn chart colors. Status colors (`success`, `warning`, `info`, `error`) are the kit's own. The only change from shadcn is a darker focus `ring` (`neutral.500`), so focus outlines meet WCAG 2.2 AA (3:1).
 
-- **Change the default brand:** edit the `brand` scale in `tokens.json`, then run `bun run theme:build`.
+- **Add a brand color:** replace the `brand` scale (50–950; your color is usually 500 or 600) and point the semantic tokens at it. Light: `primary` and `sidebar-primary` → `brand.600`, `ring` and `sidebar-ring` → `brand.500`, `accent` → `brand.50` with `accent-foreground` → `brand.700`. Dark: `primary` and `sidebar-primary` → `brand.500`, `ring` and `sidebar-ring` → `brand.400`. Set `primary-foreground` to white or near-black, whichever gives at least 4.5:1. Then run `bun run theme:build`.
 - **Add a theme:** copy `tokens.json` to `src/tokens/<name>.json`, edit it, run `node scripts/build-theme.mjs src/tokens/<name>.json <name>`, add `@import './themes/<name>.css';` to `src/styles/theme.css`, and set `data-theme='<name>'`.
 
 The generated files in `src/styles/themes/` are never edited by hand. `bun run theme:check` fails when they are out of date.
