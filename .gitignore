@@ -7,3 +7,4 @@ dist/
 *.tsbuildinfo
 bun.lock
 bun.lockb
+/release-assets/
