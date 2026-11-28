@@ -3,17 +3,25 @@ name: Release
 on:
   push:
     tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.1.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -23,7 +31,18 @@ jobs:
           python-version: "3.13"
       - uses: oven-sh/setup-bun@v2
       - name: Check tag, version, and changelog
-        run: python scripts/release_notes.py --check-tag "$GITHUB_REF_NAME"
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; then
+            echo "::error::Manual releases must run from main"
+            exit 1
+          fi
+          python scripts/release_notes.py --check-tag "$RELEASE_TAG"
+          if git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            if [ "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" != "$(git rev-parse HEAD)" ]; then
+              echo "::error::Tag already points to another commit"
+              exit 1
+            fi
+          fi
       - name: Validate manifest and templates
         run: python scripts/validate.py
       - name: Validate React kit
@@ -37,15 +56,21 @@ jobs:
           python scripts/build_templates.py
           cd release-assets
           sha256sum -c checksums.sha256
+      - name: Create tag if needed
+        run: |
+          if ! git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            git tag "$RELEASE_TAG" HEAD
+            git push origin "refs/tags/$RELEASE_TAG"
+          fi
       - name: Write release notes
         run: |
-          python scripts/release_notes.py "$GITHUB_REF_NAME" > "$RUNNER_TEMP/notes.md"
+          python scripts/release_notes.py "$RELEASE_TAG" > "$RUNNER_TEMP/notes.md"
           repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
-          previous=$(git describe --tags --abbrev=0 --match 'v*.*.*' "$GITHUB_REF_NAME^" 2>/dev/null || true)
+          previous=$(git describe --tags --abbrev=0 --match 'v*.*.*' "$RELEASE_TAG^" 2>/dev/null || true)
           if [ -n "$previous" ]; then
-            link="$repo_url/compare/$previous...$GITHUB_REF_NAME"
+            link="$repo_url/compare/$previous...$RELEASE_TAG"
           else
-            link="$repo_url/commits/$GITHUB_REF_NAME"
+            link="$repo_url/commits/$RELEASE_TAG"
           fi
           printf '\n**Full Changelog**: %s\n' "$link" >> "$RUNNER_TEMP/notes.md"
       - name: Create or update the GitHub release
@@ -53,7 +78,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="$GITHUB_REF_NAME"
+          tag="$RELEASE_TAG"
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release edit "$tag" --title "$tag" --notes-file "$RUNNER_TEMP/notes.md"
           else

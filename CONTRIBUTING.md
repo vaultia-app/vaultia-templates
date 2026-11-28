@@ -26,3 +26,7 @@ git push origin v0.1.0
 ```
 
 Replace the example version for later releases. The release workflow validates the tagged source, packages templates and publishes only after uploading the assets. Skills continue to fetch from `main`.
+
+### Release from GitHub Actions
+
+After merging the version bump into `main` and checking CI, open **Actions → Release → Run workflow**, select `main`, and enter the matching tag (for example `v0.1.0`). The workflow checks the version and templates, builds assets, creates the tag if needed, and publishes the release in the same run. An existing tag pointing to a different commit is rejected. The manual Git tag flow above remains supported.
