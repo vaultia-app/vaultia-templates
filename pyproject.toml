@@ -1,0 +1,7 @@
+[project]
+name = "vaultia-templates"
+version = "0.1.0"
+description = "Reusable templates for Vaultia"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
